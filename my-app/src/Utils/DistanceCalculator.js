@@ -17,7 +17,7 @@ class DistanceCalculator {
   
       return this.EARTH_RADIUS * c;
     }
-  }
+}
   
-  module.exports = DistanceCalculator;
+module.exports = DistanceCalculator;
   

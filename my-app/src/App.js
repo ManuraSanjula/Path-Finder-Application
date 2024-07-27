@@ -1,13 +1,26 @@
 import React, { useState, useEffect } from "react";
-import { BrowserRouter as Router, Route, Routes, Link, useNavigate } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  Link,
+  useNavigate,
+} from "react-router-dom";
 import MapComponent from "./MapComponent";
 import Geocoder from "./Geocoder";
+import CustomMap from "./CustomMap";
 
 const Location = require("./Utils/Location");
 const Graph = require("./Utils/Graph");
 const DistanceCalculator = require("./Utils/DistanceCalculator");
 const BearingCalculator = require("./Utils/BearingCalculator");
 const Dijkstra = require("./Utils/Dijkstra");
+const AStar = require("./Utils/A_Star/AStar");
+
+const BearingCalculator_A = require("./Utils/A_Star/BearingCalculator");
+const DistanceCalculator_A = require("./Utils/A_Star/DistanceCalculator");
+const Location_A = require("./Utils/A_Star/Location");
+const Graph_A = require("./Utils/A_Star/Graph");
 
 const Home = () => {
   const [navMap, setNavMap] = useState(false);
@@ -27,6 +40,35 @@ const Home = () => {
       setDes({ latitude: coordinates.lat, longitude: coordinates.lon });
     } catch (error) {
       setResult("Error fetching the coordinates.");
+    }
+  };
+
+  const a_Star = async () => {
+    try {
+      const graph = new Graph_A();
+      const locA = new Location_A(location.latitude, location.longitude);
+      const locB = new Location_A(des.latitude, des.longitude);
+
+      graph.addLocation(locA);
+      graph.addLocation(locB);
+
+      const distance = DistanceCalculator_A.calculateDistance(locA, locB);
+      graph.addEdge(locA, locB, distance);
+
+      const path = AStar.aStar(graph, locA, locB);
+
+      path.forEach((loc) =>
+        console.log(`Lat: ${loc.latitude}, Lon: ${loc.longitude}`)
+      );
+
+      for (let i = 0; i < path.length - 1; i++) {
+        const direction = BearingCalculator_A.getDirection(path[i], path[i + 1]);
+        console.log(`Go ${direction}`);
+      }
+      setNavMap(true);
+
+    } catch (error) {
+      setNavMap(false);
     }
   };
 
@@ -50,19 +92,28 @@ const Home = () => {
       );
 
       for (let i = 0; i < path.length - 1; i++) {
-        console.log(`Go ${BearingCalculator.getDirection(path[i], path[i + 1])}`);
+        console.log(
+          `Go ${BearingCalculator.getDirection(path[i], path[i + 1])}`
+        );
       }
-      setNavMap(true)
+      setNavMap(true);
+      
     } catch (error) {
-      setNavMap(false)
+      setNavMap(false);
     }
   };
 
   const navigateMap = async () => {
-    if(navMap)
-      navigate("/map", { state: { location, des } });
-  }
+    if (navMap) navigate("/map", { state: { location, des } });
+  };
 
+  const navigateCustomMap = async () => {
+    if (location.latitude && des.latitude) {
+      navigate("/custom-map", { state: { locA: location, locB: des } });
+    } else {
+      setError("Please set both start and destination locations.");
+    }
+  }
   useEffect(() => {
     if ("geolocation" in navigator) {
       const options = {
@@ -109,8 +160,10 @@ const Home = () => {
       />
       <button onClick={getCoordinates}>Get Coordinates</button>
       <p>{result}</p>
-      <button onClick={submit}>Submit</button>
+      <button onClick={submit}>Submit Dijkstra</button>
+      <button onClick={a_Star}>Submit A_Star</button>
       <button onClick={navigateMap}>Navigate to UI Map</button>
+      <button onClick={navigateCustomMap}>Navigate to Custom Map</button>
       {/* <Link to="/map">Navigate to UI Map</Link> */}
     </div>
   );
@@ -121,6 +174,7 @@ const App = () => (
     <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/map" element={<MapComponent />} />
+      <Route path="/custom-map" element={<CustomMap />} />
     </Routes>
   </Router>
 );

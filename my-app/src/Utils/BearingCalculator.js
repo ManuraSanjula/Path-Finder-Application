@@ -32,7 +32,7 @@ class BearingCalculator {
                 Math.sin(startLat) * Math.cos(endLat) * Math.cos(dLng);
       return this.toDegrees(Math.atan2(y, x));
     }
-  }
+}
   
-  module.exports = BearingCalculator;
+module.exports = BearingCalculator;
   
