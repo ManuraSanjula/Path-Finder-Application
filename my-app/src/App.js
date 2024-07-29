@@ -9,6 +9,10 @@ import {
 import MapComponent from "./MapComponent";
 import Geocoder from "./Geocoder";
 import CustomMap from "./CustomMap";
+import Login from "./Login";
+import Signup from "./Signup";
+import ProtectedRoute from "./ProtectedRoute";
+
 
 const Location = require("./Utils/Location");
 const Graph = require("./Utils/Graph");
@@ -29,6 +33,9 @@ const Home = () => {
   const [result, setResult] = useState("");
   const [userInput, setUserInput] = useState("");
   const [des, setDes] = useState({ latitude: null, longitude: null });
+  const [name, setName] = useState('');
+  const [direction, setDirection] = useState("Please select the destination");
+
   const navigate = useNavigate();
 
   const getCoordinates = async () => {
@@ -63,6 +70,7 @@ const Home = () => {
 
       for (let i = 0; i < path.length - 1; i++) {
         const direction = BearingCalculator_A.getDirection(path[i], path[i + 1]);
+        setDirection(`Go ${direction}`)
         console.log(`Go ${direction}`);
       }
       setNavMap(true);
@@ -71,6 +79,10 @@ const Home = () => {
       setNavMap(false);
     }
   };
+
+  const submitTravel = async ()=>{
+
+  }
 
   const submit = async () => {
     try {
@@ -95,9 +107,10 @@ const Home = () => {
         console.log(
           `Go ${BearingCalculator.getDirection(path[i], path[i + 1])}`
         );
+        setDirection(`Go ${BearingCalculator.getDirection(path[i], path[i + 1])}`)
       }
       setNavMap(true);
-      
+
     } catch (error) {
       setNavMap(false);
     }
@@ -115,6 +128,8 @@ const Home = () => {
     }
   }
   useEffect(() => {
+    const userResponse = prompt('Please enter travel-todo name:');
+    setName(userResponse)
     if ("geolocation" in navigator) {
       const options = {
         enableHighAccuracy: true,
@@ -164,6 +179,7 @@ const Home = () => {
       <button onClick={a_Star}>Submit A_Star</button>
       <button onClick={navigateMap}>Navigate to UI Map</button>
       <button onClick={navigateCustomMap}>Navigate to Custom Map</button>
+      <p>Here: {direction}</p>
       {/* <Link to="/map">Navigate to UI Map</Link> */}
     </div>
   );
@@ -172,9 +188,11 @@ const Home = () => {
 const App = () => (
   <Router>
     <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/map" element={<MapComponent />} />
-      <Route path="/custom-map" element={<CustomMap />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/signup" element={<Signup />} />
+      <Route path="/" element={<ProtectedRoute><Home /></ProtectedRoute>} />
+      <Route path="/map" element={<ProtectedRoute><MapComponent /></ProtectedRoute>} />
+      <Route path="/custom-map" element={<ProtectedRoute><CustomMap /></ProtectedRoute>} />
     </Routes>
   </Router>
 );
