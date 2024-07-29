@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
+import { Link, Navigate } from "react-router-dom";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -30,7 +31,7 @@ const Login = () => {
         { headers }
       );
       setCookie("user_jwt", response.data.token, 7);
-      console.log(response)
+      return <Navigate to="/" />;
     } catch (error) {
       console.log(error)
       setError("Error signing up");
@@ -56,6 +57,8 @@ const Login = () => {
           required
         />
         <button type="submit">Login</button>
+        <p></p>
+        <Link to="/signup">Signup</Link>
       </form>
       {error && <p>{error}</p>}
     </div>

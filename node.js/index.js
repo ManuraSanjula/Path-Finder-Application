@@ -9,8 +9,9 @@ const axios = require("axios");
 const crypto = require('crypto');
 const CryptoJS = require('crypto-js');
 const bcrypt = require('bcryptjs');
-
-const salt = bcrypt.genSaltSync(10);
+const email = "./email";
+const dotenv = require('dotenv');
+dotenv.config({ path: './.config.env' });
 
 function generateKeyAndIv() {
     const key = crypto.randomBytes(32);
@@ -95,7 +96,7 @@ async function jwt_verify(tokenToVerify) {
     return valid;
 }
 
-async function getEmailFromJWT(tokenToVerify) {
+async function getEmailFromJWT(tokenToVerify = "") {
     let email = ""
     jwt.verify(tokenToVerify, secretKey, (err, decoded) => {
         if (err) {
