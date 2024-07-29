@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Cookies from "js-cookie";
 
@@ -7,7 +6,6 @@ const Signup = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const navigate = useNavigate();
 
   const handleSignup = async (e) => {
 
@@ -25,11 +23,6 @@ const Signup = () => {
     try {
       const headers = {
         "Content-Type": "application/json",
-      };
-      const data = {
-        operation: "insert",
-        key: email,
-        value: password,
       };
       const response = await axios.post(
         "http://localhost:4000/signin",

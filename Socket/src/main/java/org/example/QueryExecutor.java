@@ -1,13 +1,18 @@
 package org.example;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 public class QueryExecutor<T> {
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
     private final CustomDatabase<String, T> database;
 
     public QueryExecutor(CustomDatabase<String, T> database) {
         this.database = database;
     }
 
-    public Object execute(Query<T> query) {
+    public Object execute(Query<T> query) throws JsonProcessingException {
         switch (query.getOperation()) {
             case "insert":
                 database.put(query.getKey(), query.getValue());
@@ -16,7 +21,7 @@ public class QueryExecutor<T> {
             case "read":
                 T value = database.get(query.getKey());
                 System.out.println("Read (" + query.getKey() + ", " + value + ")");
-                return value;
+                return objectMapper.writeValueAsString(value);
             case "delete":
                 database.remove(query.getKey());
                 System.out.println("Deleted (" + query.getKey() + ")");

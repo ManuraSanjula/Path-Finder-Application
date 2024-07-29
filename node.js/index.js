@@ -95,6 +95,20 @@ async function jwt_verify(tokenToVerify) {
     return valid;
 }
 
+async function getEmailFromJWT(tokenToVerify) {
+    let email = ""
+    jwt.verify(tokenToVerify, secretKey, (err, decoded) => {
+        if (err) {
+            console.log("Token verification failed:", err);
+            email = null;
+        } else {
+            console.log("Decoded Token:", decoded);
+            email = decoded.email;
+        }
+    });
+    return email;
+}
+
 app.post("/login", async (req, res) => {
     const temp = {
         operation: "read",
@@ -181,8 +195,90 @@ app.post("/verify-token", async (req, res) => {
     });
 });
 
-app.get("/travelhistory", (req, res) => {
-    res.send("Travel history route");
+app.post("/travelhistory", async (req, res) => {
+    const headers = {
+        "Content-Type": "application/json",
+    };
+    let email = await getEmailFromJWT(req.body.token)
+    delete req.body.token
+
+    const temp = {
+        operation: "read",
+        key: `${email} travel_his`,
+    };
+
+    let response = await axios.post(
+        "http://localhost:8080",
+        JSON.stringify(temp),
+        { headers }
+    );
+
+
+    if (response.data) {
+        let data = {
+            des: req.body.des,
+            location: req.body.location,
+            userResponse: req.body.userResponse
+        }
+        response.data.push(data);
+        data = {
+            operation: "insert",
+            key: `${email} travel_his`,
+            value: response.data ,
+        };
+        response = await axios.post(
+            "http://localhost:8080",
+            JSON.stringify(data),
+            { headers }
+        );
+    } else {
+        const data = {
+            operation: "insert",
+            key: `${email} travel_his`,
+            value: [{
+                des: req.body.des,
+                location: req.body.location,
+                userResponse: req.body.userResponse
+            }],
+        };
+        response = await axios.post(
+            "http://localhost:8080",
+            JSON.stringify(data),
+            { headers }
+        );
+    }
+    if (response.data) {
+        return res.status(200);
+    } else {
+        return res.status(500);
+    }
+});
+
+app.put("/travelhistory", async (req, res) => {
+    const headers = {
+        "Content-Type": "application/json",
+    };
+    let email = await getEmailFromJWT(req.body.token)
+    delete req.body.token
+
+    const temp = {
+        operation: "read",
+        key: `${email} travel_his`,
+    };
+
+    let response = await axios.post(
+        "http://localhost:8080",
+        JSON.stringify(temp),
+        { headers }
+    );
+
+    if (response.data) {
+        return res.status(200).send({
+            data: response.data
+        });
+    } else {
+        return res.status(500);
+    }
 });
 
 app.listen(port, () => {
