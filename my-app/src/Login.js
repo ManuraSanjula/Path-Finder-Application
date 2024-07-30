@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
-import { Link, Navigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   const handleLogin = async (e) => {
 
@@ -31,7 +32,7 @@ const Login = () => {
         { headers }
       );
       setCookie("user_jwt", response.data.token, 7);
-      return <Navigate to="/" />;
+      navigate('/');
     } catch (error) {
       console.log(error)
       setError("Error signing up");

@@ -13,7 +13,8 @@ import Signup from "./Signup";
 import ProtectedRoute from "./ProtectedRoute";
 import Cookies from "js-cookie";
 import axios from "axios";
-
+import { v4 as uuidv4 } from 'uuid';
+import { useParams } from 'react-router-dom';
 
 const Location = require("./Utils/Location");
 const Graph = require("./Utils/Graph");
@@ -28,6 +29,8 @@ const Location_A = require("./Utils/A_Star/Location");
 const Graph_A = require("./Utils/A_Star/Graph");
 
 const Home = () => {
+  const { latitude, longitude, userlatitude, userlongitude, sign, bool, name } = useParams();
+
   const [navMap, setNavMap] = useState(false);
   const [location, setLocation] = useState({ latitude: null, longitude: null });
   const [error, setError] = useState(null);
@@ -36,8 +39,20 @@ const Home = () => {
   const [des, setDes] = useState({ latitude: null, longitude: null });
   const [direction, setDirection] = useState("Please select the destination");
   const [history, setHistory] = useState([]);
+  const [uniqueId, setUniqueId] = useState('');
 
   const navigate = useNavigate();
+
+  const createSlug = (text) => {
+    return text
+      .toLowerCase()           // Convert to lowercase
+      .replace(/ /g, '-')      // Replace spaces with hyphens
+      .replace(/[^\w-]+/g, ''); // Remove any non-alphanumeric characters except hyphens
+  };
+
+  const generateUniqueId = (name) => {
+    return `${name}-${uuidv4()}`;
+  };
 
   const getCoordinates = async () => {
     const geocoder = new Geocoder();
@@ -114,7 +129,7 @@ const Home = () => {
       des,
       location,
       token,
-      userResponse
+      userResponse: createSlug(userResponse)
     }
 
     try {
@@ -170,6 +185,7 @@ const Home = () => {
     if (navMap) navigate("/map", { state: { location, des } });
   };
 
+
   const navigateCustomMap = async () => {
     if (location.latitude && des.latitude) {
       navigate("/custom-map", { state: { locA: location, locB: des } });
@@ -179,37 +195,51 @@ const Home = () => {
   }
   useEffect(() => {
 
+    if (bool) {
+      setLocation({ latitude: userlatitude, longitude: userlongitude });
+      setDes({ latitude, longitude })
+      setUserInput(name)
+      setResult(`Latitude: ${latitude}, Longitude: ${longitude}`);
+    }
+
+    if (sign) {
+      setDes({ latitude, longitude })
+      setUserInput(name)
+      setResult(`Latitude: ${latitude}, Longitude: ${longitude}`);
+    }
+
     getTravel().then((travel) => {
       {
         console.log(history)
       }
     })
 
-    if ("geolocation" in navigator) {
-      const options = {
-        enableHighAccuracy: true,
-        maximumAge: 0,
-        timeout: 5000,
-      };
+    if (!bool)
+      if ("geolocation" in navigator) {
+        const options = {
+          enableHighAccuracy: true,
+          maximumAge: 0,
+          timeout: 5000,
+        };
 
-      const watchId = navigator.geolocation.watchPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords;
-          setLocation({ latitude, longitude });
-        },
-        (error) => {
-          setError(error.message);
-        },
-        options
-      );
+        const watchId = navigator.geolocation.watchPosition(
+          (position) => {
+            const { latitude, longitude } = position.coords;
+            setLocation({ latitude, longitude });
+          },
+          (error) => {
+            setError(error.message);
+          },
+          options
+        );
 
-      return () => {
-        navigator.geolocation.clearWatch(watchId);
-      };
-    } else {
-      setError("Geolocation is not supported by this browser.");
-    }
-  }, []);
+        return () => {
+          navigator.geolocation.clearWatch(watchId);
+        };
+      } else {
+        setError("Geolocation is not supported by this browser.");
+      }
+  }, [bool]);
 
   return (
     <div style={{ display: 'flex' }}>
@@ -251,7 +281,7 @@ const Home = () => {
                   User Lat: {entry.location.latitude}, Lon: {entry.location.longitude}
                 </li>
                 <li>
-                  Name: {entry.userResponse}, Url: /{entry.userResponse}
+                  Name: {entry.userResponse}, Url: <a href={`/${entry.des.latitude}/${entry.des.longitude}/${entry.location.latitude}/${entry.location.longitude}/${true}/${entry.userResponse}`}>{entry.userResponse}</a>
                 </li>
                 <p></p>
               </div>
@@ -272,6 +302,7 @@ const App = () => (
       <Route path="/" element={<ProtectedRoute><Home /></ProtectedRoute>} />
       <Route path="/map" element={<ProtectedRoute><MapComponent /></ProtectedRoute>} />
       <Route path="/custom-map" element={<ProtectedRoute><CustomMap /></ProtectedRoute>} />
+      <Route path="/:latitude/:longitude/:userlatitude/:userlongitude/:bool/:name" element={<ProtectedRoute><Home /></ProtectedRoute>} />
     </Routes>
   </Router>
 );
