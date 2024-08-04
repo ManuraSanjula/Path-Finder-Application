@@ -15,8 +15,8 @@ import Cookies from "js-cookie";
 import axios from "axios";
 
 
-const Location = require("./temp/Location");
-const Graph = require("./Utils/temp/Graph");
+const Location = require("./Utils/Location");
+const Graph = require("./Utils/Graph");
 const DistanceCalculator = require("./Utils/DistanceCalculator");
 const BearingCalculator = require("./Utils/BearingCalculator");
 const Dijkstra = require("./Utils/Dijkstra");
@@ -24,8 +24,8 @@ const AStar = require("./Utils/A_Star/AStar");
 
 const BearingCalculator_A = require("./Utils/A_Star/BearingCalculator");
 const DistanceCalculator_A = require("./Utils/A_Star/DistanceCalculator");
-const Location_A = require("./Utils/temp/Location");
-const Graph_A = require("./Utils/temp/Graph");
+const Location_A = require("./Utils/A_Star/Location");
+const Graph_A = require("./Utils/A_Star/Graph");
 
 const Home = () => {
   const [navMap, setNavMap] = useState(false);
@@ -94,7 +94,7 @@ const Home = () => {
         token,
       }
       const response = await axios.put(
-        "http://localhost:4000/travelhistory",
+        "http://localhost:8080/travelhistory",
         JSON.stringify(data),
         { headers }
       );
@@ -123,7 +123,7 @@ const Home = () => {
       };
 
       const response = await axios.post(
-        "http://localhost:4000/travelhistory",
+        "http://localhost:8080/travelhistory",
         JSON.stringify(data),
         { headers }
       );
