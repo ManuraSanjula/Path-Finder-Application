@@ -118,7 +118,7 @@ app.post("/login", async (req, res) => {
     const headers = {
         "Content-Type": "application/json",
     };
-    let response = await axios.post("http://localhost:8081", JSON.stringify(temp), { headers });
+    let response = await axios.post("http://localhost:8080", JSON.stringify(temp), { headers });
     if (response.data) {
 
         const bytes = CryptoJS.AES.decrypt(response.data, secretKey);
@@ -152,7 +152,7 @@ app.post("/signin", async (req, res) => {
     };
 
     try {
-        let response = await axios.post("http://localhost:8081", JSON.stringify(temp), { headers });
+        let response = await axios.post("http://localhost:8080", JSON.stringify(temp), { headers });
 
         if (response.data) {
             return res.status(400).send({
@@ -166,7 +166,7 @@ app.post("/signin", async (req, res) => {
                 value: hash,
             };
             response = await axios.post(
-                "http://localhost:8081",
+                "http://localhost:8080",
                 JSON.stringify(data),
                 { headers }
             );
@@ -214,7 +214,7 @@ app.post("/travelhistory", async (req, res) => {
     };
 
     let response = await axios.post(
-        "http://localhost:8081",
+        "http://localhost:8080",
         JSON.stringify(temp),
         { headers }
     );
@@ -233,7 +233,7 @@ app.post("/travelhistory", async (req, res) => {
             value: response.data ,
         };
         response = await axios.post(
-            "http://localhost:8081",
+            "http://localhost:8080",
             JSON.stringify(data),
             { headers }
         );
@@ -248,7 +248,7 @@ app.post("/travelhistory", async (req, res) => {
             }],
         };
         response = await axios.post(
-            "http://localhost:8081",
+            "http://localhost:8080",
             JSON.stringify(data),
             { headers }
         );
@@ -278,7 +278,7 @@ app.put("/travelhistory", async (req, res) => {
     };
 
     let response = await axios.post(
-        "http://localhost:8081",
+        "http://localhost:8080",
         JSON.stringify(temp),
         { headers }
     );

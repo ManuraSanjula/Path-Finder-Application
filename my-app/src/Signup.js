@@ -28,7 +28,7 @@ const Signup = () => {
         "Content-Type": "application/json",
       };
       const response = await axios.post(
-        "http://localhost:8080/signin",
+        "http://localhost:4000/signin",
         JSON.stringify({ email, password }),
         { headers }
       );

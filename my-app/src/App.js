@@ -109,7 +109,7 @@ const Home = () => {
         token,
       }
       const response = await axios.put(
-        "http://localhost:8080/travelhistory",
+        "http://localhost:4000/travelhistory",
         JSON.stringify(data),
         { headers }
       );
@@ -138,7 +138,7 @@ const Home = () => {
       };
 
       const response = await axios.post(
-        "http://localhost:8080/travelhistory",
+        "http://localhost:4000/travelhistory",
         JSON.stringify(data),
         { headers }
       );
