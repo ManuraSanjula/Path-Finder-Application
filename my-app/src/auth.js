@@ -8,7 +8,7 @@ const useAuth = () => {
   useEffect(() => {
     const token = Cookies.get("user_jwt");
     if (token) {
-      axios.post("http://localhost:4000/verify-token", { token })
+      axios.post("http://localhost:8080/verify-token", { token })
         .then(response => {
           if (!response.data.valid) {
             Cookies.remove("user_jwt");

@@ -27,7 +27,7 @@ const Signup = () => {
         "Content-Type": "application/json",
       };
       const response = await axios.post(
-        "http://localhost:4000/signin",
+        "http://localhost:8080/signin",
         JSON.stringify({ email, password }),
         { headers }
       );
@@ -44,29 +44,31 @@ const Signup = () => {
   };
 
   return (
-    <div>
-      <h2>Signup</h2>
-      <form onSubmit={handleSignup}>
-        <input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="Email"
-          required
-        />
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          placeholder="Password"
-          required
-        />
-        <button type="submit">Signup</button>
-        <p></p>
-        <Link to="/login">Login</Link>
-      </form>
-      {error && <p>{error}</p>}
-    </div>
+      <div className="bg-[#0e2a36] flex flex-col justify-center items-center h-screen w-full fixed z-[100]">
+        <form className="flex shadow-2xl flex-col justify-center rounded-lg items-center p-10 backdrop-blur-lg"
+              onSubmit={handleSignup}>
+          <h2 className="text-white text-4xl font-semibold my-5">Map Navigator Sign Up</h2>
+          <input className="border-black space-y-4  rounded border-2 px-10 py-2 mx-10 my-2"
+                 type="email"
+                 value={email}
+                 onChange={(e) => setEmail(e.target.value)}
+                 placeholder="Email"
+                 required
+          />
+          <input className="border-black rounded border-2 px-10 py-2 mx-10 my-2"
+                 type="password"
+                 value={password}
+                 onChange={(e) => setPassword(e.target.value)}
+                 placeholder="Password"
+                 required
+          />
+          <button className="text-black bg-white rounded-lg text-xl m-5 px-10 py-2 font-semibold" type="submit">Sign Up
+          </button>
+          <p className="bg-transparent text-white bg-white rounded-lg text-md">Already have an account?
+            <Link to="/login" className="text-blue-600 underline font-semibold"> Sign In</Link></p>
+        </form>
+        {error && <p className="text-red-500">{error}</p>}
+      </div>
   );
 };
 
