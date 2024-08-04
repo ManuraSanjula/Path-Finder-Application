@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
+import "./styles.css"
 import { Link, useNavigate } from "react-router-dom";
 
 const Signup = () => {
@@ -64,7 +65,7 @@ const Signup = () => {
           />
           <button className="text-black bg-white rounded-lg text-xl m-5 px-10 py-2 font-semibold" type="submit">Sign Up
           </button>
-          <p className="bg-transparent text-white bg-white rounded-lg text-md">Already have an account?
+          <p className="bg-transparent text-white text-md font-semibold">Already have an account?
             <Link to="/login" className="text-blue-600 underline font-semibold"> Sign In</Link></p>
         </form>
         {error && <p className="text-red-500">{error}</p>}

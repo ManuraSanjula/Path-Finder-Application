@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
+import "./styles.css"
 import { Link, useNavigate } from "react-router-dom";
 
 const Login = () => {
@@ -40,29 +41,31 @@ const Login = () => {
   };
 
   return (
-    <div>
-      <h2>Login</h2>
-      <form onSubmit={handleLogin}>
-        <input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="Email"
-          required
-        />
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          placeholder="Password"
-          required
-        />
-        <button type="submit">Login</button>
-        <p></p>
-        <Link to="/signup">Signup</Link>
-      </form>
-      {error && <p>{error}</p>}
-    </div>
+      <div className="bg-[#0e2a36] flex flex-col justify-center items-center h-screen w-full fixed z-[100]">
+        <form className="flex shadow-2xl flex-col justify-center rounded-lg items-center p-10 backdrop-blur-lg"
+              onSubmit={handleLogin}>
+          <h2 className="text-white text-4xl font-semibold my-5">Map Navigator Login</h2>
+          <input className="border-black space-y-4  rounded border-2 px-10 py-2 mx-10 my-2"
+                 type="email"
+                 value={email}
+                 onChange={(e) => setEmail(e.target.value)}
+                 placeholder="Email"
+                 required
+          />
+          <input className="border-black rounded border-2 px-10 py-2 mx-10 my-2"
+                 type="password"
+                 value={password}
+                 onChange={(e) => setPassword(e.target.value)}
+                 placeholder="Password"
+                 required
+          />
+          <button className="text-black bg-white rounded-lg text-xl m-5 px-10 py-2 font-semibold" type="submit">Sign In
+          </button>
+          <p className="bg-transparent text-white text-md font-semibold">Don't have an account?
+            <Link to="/signup" className="text-blue-600 underline font-semibold"> Sign Up</Link></p>
+        </form>
+        {error && <p className="text-red-500">{error}</p>}
+      </div>
   );
 };
 
