@@ -3,6 +3,10 @@ const DistanceCalculator = require('./DistanceCalculator');
 
 class AStar {
     static aStar(graph, start, goal) {
+        if(!graph || !start || !goal) {
+            throw new Error('Invalid input: graph,start, and goal are required');
+        }
+
         const openSet = new PriorityQueue();
         openSet.enqueue(start, 0);
 
@@ -34,7 +38,7 @@ class AStar {
             });
         }
 
-        return [];
+        return []; //Return empty if no path is found
     }
 
     static reconstructPath(cameFrom, current) {

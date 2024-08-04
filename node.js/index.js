@@ -200,6 +200,11 @@ app.post("/travelhistory", async (req, res) => {
     const headers = {
         "Content-Type": "application/json",
     };
+    if(!req.body.token) {
+        return res.status(401).send({
+            error: "Unauthorized"
+        });
+    }
     let email = await getEmailFromJWT(req.body.token)
     delete req.body.token
 
@@ -259,6 +264,11 @@ app.put("/travelhistory", async (req, res) => {
     const headers = {
         "Content-Type": "application/json",
     };
+    if(!req.body.token) {
+        return res.status(401).send({
+            error: "Unauthorized"
+        });
+    }
     let email = await getEmailFromJWT(req.body.token)
     delete req.body.token
 
