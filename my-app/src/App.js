@@ -15,6 +15,7 @@ import Cookies from "js-cookie";
 import axios from "axios";
 import { v4 as uuidv4 } from 'uuid';
 import { useParams } from 'react-router-dom';
+import "./styles.css";
 
 const Location = require("./Utils/Location");
 const Graph = require("./Utils/Graph");
@@ -242,52 +243,71 @@ const Home = () => {
   }, [bool]);
 
   return (
-    <div style={{ display: 'flex' }}>
-      <div style={{ flex: 1 }}>
-        <h1>User's Location</h1>
-        {error ? (
-          <p>Error: {error}</p>
-        ) : (
-          <div>
-            <p>Latitude: {location.latitude}</p>
-            <p>Longitude: {location.longitude}</p>
-          </div>
-        )}
-        <input
-          type="text"
-          value={userInput}
-          onChange={(e) => setUserInput(e.target.value)}
-          placeholder="Enter a location name"
-        />
-        <button onClick={getCoordinates}>Get Coordinates</button>
-        <p>{result}</p>
-        <button onClick={submit}>Submit Dijkstra</button>
-        <button onClick={a_Star}>Submit A_Star</button>
-        <button onClick={navigateMap}>Navigate to UI Map</button>
-        <button onClick={navigateCustomMap}>Navigate to Custom Map</button>
-        <p>Here: {direction}</p>
-        <button onClick={submitTravel}>Save</button>
-      </div>
-      <div style={{ flex: 1, marginLeft: '20px' }}>
-        <h2>History</h2>
-        <ul>
-          {history.map((entry, index) => (
-            <React.Fragment key={index}>
-              <div>
-                <li>
-                  Destination Lat: {entry.des.latitude}, Lon: {entry.des.longitude}
-                </li>
-                <li>
-                  User Lat: {entry.location.latitude}, Lon: {entry.location.longitude}
-                </li>
-                <li>
-                  Name: {entry.userResponse}, Url: <a href={`/${entry.des.latitude}/${entry.des.longitude}/${entry.location.latitude}/${entry.location.longitude}/${true}/${entry.userResponse}`}>{entry.userResponse}</a>
-                </li>
-                <p></p>
+    <div>
+      <div className="bg-[#0e2a36] flex flex-col justify-center items-center h-screen w-full fixed z-[100]">
+        <div className="rounded-lg shadow-2xl p-5">
+          {error ? (
+              <p>Error: {error}</p>
+          ) : (
+              <div className="items-center justify-center flex flex-row text-white my-5">
+                <h1 className="m-2 text-xl">Your Location :</h1>
+                <p className="m-2 text-xl">Latitude :</p><p
+                  className="text-blue-600 underline font-semibold"> {location.latitude}</p>
+                <p className="m-2 text-xl">Longitude :</p><p
+                  className="text-blue-600 underline font-semibold"> {location.longitude}</p>
               </div>
-            </React.Fragment>
-          ))}
-        </ul>
+          )}
+          <input className="border rounded-lg px-16 mx-10 my-2"
+                 type="text"
+                 value={userInput}
+                 onChange={(e) => setUserInput(e.target.value)}
+                 placeholder="Enter a location you want"
+          />
+          <button className="border rounded-lg bg-green-500 p-2 my-2 text-white font-semibold"
+                  onClick={getCoordinates}>Get Coordinates
+          </button>
+          <p className="text-white items-center justify-center px-10">{result}</p>
+          <div className="items-center justify-center flex flex-col space-y-4 pt-3">
+            <button className="text-white border rounded-lg bg-blue-500 p-2 my-2 font-semibold" onClick={submit}>Submit
+              Using Dijkstra
+            </button>
+            <button className="text-white border rounded-lg bg-yellow-400 p-2 my-2 font-semibold"
+                    onClick={a_Star}>Submit Using A_Star
+            </button>
+            <button className="text-white border rounded-lg bg-green-500 p-2 my-2 font-semibold"
+                    onClick={navigateMap}>Navigate to UI Map
+            </button>
+            <button className="text-white border rounded-lg p-2 my-2 font-semibold" onClick={navigateCustomMap}>Navigate
+              to Custom Map
+            </button>
+            <p className="text-white">Here: {direction}</p>
+            <button className="text-white border rounded-lg bg-green-500 p-2 my-2 font-semibold"
+                    onClick={submitTravel}>Save
+            </button>
+          </div>
+          <div>
+            <h2 className="items-center justify-center text-white my-5 text-xl">Your Travel History :</h2>
+            <ul>
+              {history.map((entry, index) => (
+                  <React.Fragment key={index}>
+                    <div className="items-center justify-center px-10 text-white py-4">
+                      <li>
+                        Destination Lat: <span className="text-blue-500 underline">{entry.des.latitude}</span>, Lon: <span className="text-blue-500 underline">{entry.des.longitude}</span>
+                      </li>
+                      <li>
+                        User Lat: {entry.location.latitude}, Lon: {entry.location.longitude}
+                      </li>
+                      <li>
+                        Name: {entry.userResponse}, Url: <a className="text-blue-500 underline"
+                          href={`/${entry.des.latitude}/${entry.des.longitude}/${entry.location.latitude}/${entry.location.longitude}/${true}/${entry.userResponse}`}>{entry.userResponse}</a>
+                      </li>
+                      <p></p>
+                    </div>
+                  </React.Fragment>
+              ))}
+            </ul>
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -295,16 +315,17 @@ const Home = () => {
 };
 
 const App = () => (
-  <Router>
-    <Routes>
-      <Route path="/login" element={<Login />} />
-      <Route path="/signup" element={<Signup />} />
-      <Route path="/" element={<ProtectedRoute><Home /></ProtectedRoute>} />
-      <Route path="/map" element={<ProtectedRoute><MapComponent /></ProtectedRoute>} />
-      <Route path="/custom-map" element={<ProtectedRoute><CustomMap /></ProtectedRoute>} />
-      <Route path="/:latitude/:longitude/:userlatitude/:userlongitude/:bool/:name" element={<ProtectedRoute><Home /></ProtectedRoute>} />
-    </Routes>
-  </Router>
+    <Router>
+      <Routes>
+        <Route path="/login" element={<Login/>}/>
+        <Route path="/signup" element={<Signup/>}/>
+        <Route path="/" element={<ProtectedRoute><Home/></ProtectedRoute>}/>
+        <Route path="/map" element={<ProtectedRoute><MapComponent/></ProtectedRoute>}/>
+        <Route path="/custom-map" element={<ProtectedRoute><CustomMap/></ProtectedRoute>}/>
+        <Route path="/:latitude/:longitude/:userlatitude/:userlongitude/:bool/:name"
+               element={<ProtectedRoute><Home/></ProtectedRoute>}/>
+      </Routes>
+    </Router>
 );
 
 export default App;
